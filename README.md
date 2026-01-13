@@ -60,7 +60,7 @@ graph TB
         end
         
         subgraph "Workload Layer"
-            HPA[HorizontalPodAutoscaler<br/>demo-hpa<br/>Min: 1 | Max: 5<br/>CPU: 50%]
+            HPA[HorizontalPodAutoscaler<br/>demo-hpa<br/>Min: 1, Max: 5<br/>CPU: 50%]
             Deployment[Deployment<br/>demo-deployment<br/>Replicas: 2]
             
             subgraph "Pods"
