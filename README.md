@@ -31,6 +31,8 @@
 
 <strong>Version 1.0.0</strong> | <strong>Last Updated:</strong> January 2026
 </div>
+
+---
 ```
 az group list 
 
@@ -59,6 +61,7 @@ az group delete \
   --name aks 
 
 ```
+---
 Below is a **very basic, beginner-friendly Kubernetes (K8s) cheat sheet** with **essential commands + minimal YAML templates**
 
 ![Image](https://images.clickittech.com/2020/wp-content/uploads/2022/04/13202329/Diagram-55.jpg)
