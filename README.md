@@ -31,7 +31,34 @@
 
 <strong>Version 1.0.0</strong> | <strong>Last Updated:</strong> January 2026
 </div>
+```
+az group list 
 
+az group create \
+  --name aks \
+  --location eastus
+
+az aks create \
+  --resource-group aks \
+  --name mycluster \
+  --node-count 2 \
+  --node-vm-size Standard_DS2_v2 \
+  --enable-managed-identity \
+  --generate-ssh-keys
+
+az aks get-credentials \
+  --resource-group aks \
+  --name mycluster
+
+git clone https://github.com/atulkamble/k8s-basics.git
+kubectl apply -f k8s-basics
+
+cd k8s-basics
+
+az group delete \
+  --name aks 
+
+```
 Below is a **very basic, beginner-friendly Kubernetes (K8s) cheat sheet** with **essential commands + minimal YAML templates**
 
 ![Image](https://images.clickittech.com/2020/wp-content/uploads/2022/04/13202329/Diagram-55.jpg)
