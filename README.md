@@ -240,3 +240,201 @@ k8s-basic/
 ✅ Logs & Exec
 
 ---
+Below is **very basic, beginner-friendly Kubernetes YAML** for each resource.
+You can **copy–paste and apply directly**.
+(No advanced fields, no production extras.)
+
+---
+
+## 1️⃣ Deployment (Nginx)
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+Apply:
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+---
+
+## 2️⃣ Service (ClusterIP)
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-service
+spec:
+  type: ClusterIP
+  selector:
+    app: demo
+  ports:
+  - port: 80
+    targetPort: 80
+```
+
+Apply:
+
+```bash
+kubectl apply -f service.yaml
+```
+
+---
+
+## 3️⃣ ConfigMap (Simple Key-Value)
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-config
+data:
+  APP_NAME: "MyDemoApp"
+  ENV: "dev"
+```
+
+Use in Pod (example):
+
+```yaml
+env:
+- name: APP_NAME
+  valueFrom:
+    configMapKeyRef:
+      name: demo-config
+      key: APP_NAME
+```
+
+---
+
+## 4️⃣ Secret (Base64 Encoded)
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: demo-secret
+type: Opaque
+data:
+  username: YWRtaW4=      # admin
+  password: MTIzNDU=      # 12345
+```
+
+> Encode value:
+
+```bash
+echo -n admin | base64
+```
+
+Use in Pod:
+
+```yaml
+env:
+- name: DB_USER
+  valueFrom:
+    secretKeyRef:
+      name: demo-secret
+      key: username
+```
+
+---
+
+## 5️⃣ Ingress (Very Basic)
+
+> ⚠️ Requires **Ingress Controller** (like NGINX Ingress)
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+spec:
+  rules:
+  - host: demo.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-service
+            port:
+              number: 80
+```
+
+Test locally (optional):
+
+```bash
+curl -H "Host: demo.example.com" http://<INGRESS-IP>
+```
+
+---
+
+## 6️⃣ HPA (CPU Based)
+
+> ⚠️ Requires **metrics-server**
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: demo-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demo-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+```
+
+Check:
+
+```bash
+kubectl get hpa
+```
+
+---
+
+## 📁 Recommended File Structure
+
+```
+k8s-basic/
+│── deployment.yaml
+│── service.yaml
+│── configmap.yaml
+│── secret.yaml
+│── ingress.yaml
+│── hpa.yaml
+```
+
+---
+
+
